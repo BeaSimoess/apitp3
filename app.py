@@ -45,13 +45,15 @@ def auth_user(func):
         return func(*args, **kwargs)
     return decorated
 
-##########################################################
-##  UTILIZADORES
-##########################################################
-## LOGIN
-##########################################################
 
-@app.route("/login", methods=['POST'])
+
+################################
+##  UTILIZADORES
+################################
+
+## LOGIN
+
+@app.route("/user/login", methods=['POST'])
 def login():
     content = request.get_json()
 
@@ -81,15 +83,14 @@ def login():
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
         return jsonify({"Code": NOT_FOUND_CODE, "Erro": "Utilizador não encontrado"})
-    return {"Code": OK_CODE, 'Token': token.decode('utf-8')}
+    return {"Utilizador logado com sucesso! Code": OK_CODE, 'Token': token.decode('utf-8')}
   
 
 
-##########################################################
-## REGISTO
-##########################################################
 
-@app.route("/registo", methods=['POST'])
+## REGISTO
+
+@app.route("/user/registo", methods=['POST'])
 def registo():
     content = request.get_json()
 
@@ -110,7 +111,176 @@ def registo():
         conn.close()
     except (Exception, psycopg2.DatabaseError) as error:
         return jsonify({"Code": NOT_FOUND_CODE, "Erro": str(error)})
-    return {"Code": OK_CODE}
+    return {"Utilizador registado com sucesso! Code": OK_CODE}
+
+
+
+## RETORNAR DADOS 
+
+@app.route("/user/consultar", methods=['GET'])
+@auth_user
+def consultarUser():
+    content = request.get_json()
+
+    conn = db_connection()
+    cur = conn.cursor()
+
+    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
+
+    cur.execute("SELECT * FROM users WHERE id = %s;", (decoded_token["id"],))
+    rows = cur.fetchall()
+
+    conn.close()
+    return jsonify({"Id": rows[0][1], "nome": rows[0][2]})
+
+
+
+################################
+##  TAREFAS
+################################
+
+## INSERIR
+
+@app.route("/tarefa/inserir", methods=['POST'])
+@auth_user
+def inserirTarefa():
+    content = request.get_json()
+
+    if "titulo" not in content or "descricao" not in content or "data" not in content or "hora" not in content or "estado" not in content or "lista_id" not in content: 
+        return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
+
+    insert_tarefa_info = """
+                INSERT INTO tarefa(id, titulo, descricao, data, hora, estado, lista_id) 
+                VALUES(0, %s, %s, %s, %s, %s, %s);
+                """
+
+    values = [content["titulo"], content["descricao"], content["data"], content["hora"], content["estado"], content["lista_id"]]
+
+    try:
+        with db_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(insert_tarefa_info, values)
+        conn.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        return jsonify({"Code": NOT_FOUND_CODE, "Erro": str(error)})
+    return {"Tarefa inserida com sucesso! Code": OK_CODE}
+
+
+
+## RETORNAR DADOS
+
+@app.route("/tarefa/consultar", methods=['GET'])
+@auth_user
+def retornarTarefa():
+    content = request.get_json()
+
+    conn = db_connection()
+    cur = conn.cursor()
+
+    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
+
+    cur.execute("SELECT * FROM tarefa WHERE id = %s;", (decoded_token["id"],))
+    rows = cur.fetchall()
+
+    conn.close()
+    return jsonify({"Id": rows[0][1], "Título": rows[0][2], "Descrição": rows[0][3], "Data": rows[0][4], "Hora": rows[0][5], "Estado": rows[0][6], "Lista": rows[0][7]})
+
+
+
+## ATUALIZAR DADOS
+
+@app.route("/tarefa/atualizar", methods=['POST'])
+@auth_user
+def atualizaTarefa():
+    content = request.get_json()
+
+    if "contexto" not in content or "dados" not in content: 
+        return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
+
+    if "contexto" == "titulo":
+     update_tarefa_info = """
+                UPDATE tarefa SET titulo = %s WHERE id = %s;
+                """
+     if "contexto" == "descricao":
+        update_tarefa_info = """
+                UPDATE tarefa SET descricao = %s WHERE id = %s;
+                """
+     if "contexto" == "data":
+        update_tarefa_info = """
+                UPDATE tarefa SET data = %s WHERE id = %s;
+                """
+     if "contexto" == "hora":
+        update_tarefa_info = """
+                UPDATE tarefa SET hora = %s WHERE id = %s;
+                """
+
+    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
+    values = [content["contexto"], content["dados"], decoded_token["id"]]
+
+    try:
+        with db_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(update_tarefa_info, values)
+        conn.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        return jsonify({"Code": NOT_FOUND_CODE, "Erro": "Tarefa não atualizada!"})
+    return {"Tarefa atualizada com sucesso! Code": OK_CODE}
+
+
+
+
+## ACTUALIZAR ESTADO
+
+@app.route("/tarefa/atualizarEstado", methods=['POST'])
+@auth_user
+def atualizarEstado():
+    content = request.get_json()
+
+    if "estado" not in content: 
+        return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
+
+    update_tarefa_estado = """
+                UPDATE tarefa SET estado = %s, email = %s WHERE id = %s;
+                """
+    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
+    values = [content["estado"], decoded_token["id"]]
+
+    try:
+        with db_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(update_tarefa_estado, values)
+        conn.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        return jsonify({"Code": NOT_FOUND_CODE, "Erro": "Tarefa não atualizada!"})
+    return {"Tarefa atualizada com sucesso! Code": OK_CODE}
+
+
+
+## REMOVER
+
+@app.route("/tarefa/remover", methods=['POST'])
+@auth_user
+def removerTarefa():
+    content = request.get_json()
+
+    remove_tarefa = """
+                DELETE FROM tarefa WHERE id = %s;
+                """
+    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
+    values = [decoded_token["id"]]
+
+    try:
+        with db_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(remove_tarefa, values)
+        conn.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        return jsonify({"Code": NOT_FOUND_CODE, "Erro": "A Tarefa não foi removida!"})
+    return {"Tarefa removida com sucesso! Code": OK_CODE}
+
+
+
+
 
 
 ##########################################################
