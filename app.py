@@ -142,7 +142,7 @@ def consultarUser():
 ## INSERIR
 
 @app.route("/tarefa/inserir", methods=['POST'])
-@auth_user
+#@auth_user
 def inserirTarefa():
     content = request.get_json()
 
@@ -170,7 +170,7 @@ def inserirTarefa():
 ## RETORNAR DADOS
 
 @app.route("/tarefa/consultar", methods=['GET'])
-@auth_user
+#@auth_user
 def retornarTarefa():
     content = request.get_json()
 
@@ -190,7 +190,7 @@ def retornarTarefa():
 ## ATUALIZAR DADOS
 
 @app.route("/tarefa/atualizar", methods=['POST'])
-@auth_user
+#@auth_user
 def atualizaTarefa():
     content = request.get_json()
 
@@ -232,7 +232,7 @@ def atualizaTarefa():
 ## ATUALIZAR ESTADO
 
 @app.route("/tarefa/atualizarEstado", methods=['POST'])
-@auth_user
+#@auth_user
 def atualizarEstado():
     content = request.get_json()
 
@@ -259,7 +259,7 @@ def atualizarEstado():
 ## REMOVER
 
 @app.route("/tarefa/remover", methods=['POST'])
-@auth_user
+#@auth_user
 def removerTarefa():
     content = request.get_json()
 
