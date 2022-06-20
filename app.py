@@ -23,21 +23,21 @@ def home():
 
 
 ##########################################################
-## TOKEN INTERCEPTOR
+## VERIFICAÇÃO TOKEN
 ##########################################################
 def auth_user(func):
     @wraps(func)
     def decorated(*args, **kwargs):
         content = request.get_json()
+        #verificar se o token tem conteúdo ou não
         if content is None or "token" not in content or not content["token"]:
             return jsonify({'Erro': 'Token está em falta!', 'Code': UNAUTHORIZED_CODE})
 
         try:
             token = content["token"]
             data = jwt.decode(token, app.config['SECRET_KEY'])    
-
-            decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
-            if(decoded_token["expiration"] < str(datetime.utcnow())):
+            #verificar a data de expiração do token
+            if(data["expiration"] < str(datetime.utcnow())):
                 return jsonify({"Erro": "O Token expirou!", "Code": NOT_FOUND_CODE})
 
         except Exception as e:
@@ -45,25 +45,28 @@ def auth_user(func):
         return func(*args, **kwargs)
     return decorated
 
-
+##########################################################
+##  UTILIZADORES
 ##########################################################
 ## LOGIN
 ##########################################################
+
 @app.route("/login", methods=['POST'])
 def login():
     content = request.get_json()
 
-    if "n_identificacao" not in content or "senha" not in content:
+    if "nome_user" not in content or "password" not in content:
         return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
 
+    #obter conteúdo do utilizador
     get_user_info = """
                 SELECT *
-                FROM utilizadores
-                WHERE n_identificacao = %s AND senha = crypt(%s, senha);
+                FROM users
+                WHERE nome_user = %s AND password = crypt(%s, password);
                 """
-
-    values = [content["n_identificacao"], content["senha"]]
-
+    #descrever os parâmetros da query
+    values = [content["nome_user"], content["password"]]
+    
     try:
         with db_connection() as conn:
             with conn.cursor() as cursor:
@@ -71,7 +74,7 @@ def login():
                 rows = cursor.fetchall()
                 token = jwt.encode({
                     'id': rows[0][0],
-                    'administrador': rows[0][7],
+                    #renovar a data de expiração do token
                     'expiration': str(datetime.utcnow() + timedelta(hours=1))
                 }, app.config['SECRET_KEY'])
         conn.close()
@@ -81,27 +84,29 @@ def login():
     return {"Code": OK_CODE, 'Token': token.decode('utf-8')}
   
 
+
 ##########################################################
-## REGISTO DE UTILIZADOR
+## REGISTO
 ##########################################################
-@app.route("/registar_utilizador", methods=['POST'])
-def registar_utilizador():
+
+@app.route("/registo", methods=['POST'])
+def registo():
     content = request.get_json()
 
-    if "n_identificacao" not in content or "nome" not in content or "senha" not in content or "email" not in content or "cargo" not in content: 
+    if "nome_user" not in content or "password" not in content: 
         return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
 
-    get_user_info = """
-                INSERT INTO utilizadores(n_identificacao, nome, senha, email, cargo, administrador) 
-                VALUES(%s, %s, crypt(%s, gen_salt('bf')), %s, %s, FALSE);
+    insert_user_info = """
+                INSERT INTO users(nome_user, password) 
+                VALUES(%s, crypt(%s, gen_salt('bf')));
                 """
 
-    values = [content["n_identificacao"], content["nome"], content["senha"], content["email"], content["cargo"]]
+    values = [content["nome_user"], content["password"]]
 
     try:
         with db_connection() as conn:
             with conn.cursor() as cursor:
-                cursor.execute(get_user_info, values)
+                cursor.execute(insert_user_info, values)
         conn.close()
     except (Exception, psycopg2.DatabaseError) as error:
         return jsonify({"Code": NOT_FOUND_CODE, "Erro": str(error)})
