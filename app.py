@@ -62,7 +62,7 @@ def login():
     get_user_info = """
                 SELECT *
                 FROM users
-                WHERE nome_user = %s AND password = crypt(%s, password);
+                WHERE nome = %s AND pass = %s;
                 """
     #descrever os parâmetros da query
     values = [content["nome_user"], content["password"]]
