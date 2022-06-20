@@ -174,12 +174,13 @@ def inserirTarefa():
 def retornarTarefa():
     content = request.get_json()
 
+    if "id" not in content: 
+        return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
+
     conn = db_connection()
     cur = conn.cursor()
 
-    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
-
-    cur.execute("SELECT * FROM tarefa WHERE id = %s;", (decoded_token["id"],))
+    cur.execute("SELECT * FROM tarefa WHERE id = %s;")
     rows = cur.fetchall()
 
     conn.close()
