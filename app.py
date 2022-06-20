@@ -98,7 +98,7 @@ def registo():
 
     insert_user_info = """
                 INSERT INTO users(nome, pass) 
-                VALUES(%s, crypt(%s, gen_salt('bf')));
+                VALUES(%s, %s);
                 """
 
     values = [content["nome_user"], content["password"]]
