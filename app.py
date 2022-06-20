@@ -97,7 +97,7 @@ def registo():
         return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
 
     insert_user_info = """
-                INSERT INTO users(nome_user, password) 
+                INSERT INTO users(nome, pass) 
                 VALUES(%s, crypt(%s, gen_salt('bf')));
                 """
 
