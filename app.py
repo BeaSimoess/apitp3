@@ -229,7 +229,7 @@ def atualizaTarefa():
 
 
 
-## ACTUALIZAR ESTADO
+## ATUALIZAR ESTADO
 
 @app.route("/tarefa/atualizarEstado", methods=['POST'])
 @auth_user
