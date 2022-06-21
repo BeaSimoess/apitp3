@@ -176,12 +176,9 @@ def retornarTarefa():
 
     if "id" not in content: 
         return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
-
-    return "here"
-
     conn = db_connection()
     cur = conn.cursor()
-
+    return "here"
     cur.execute("SELECT * FROM tarefa WHERE id = %s;", content["id"])
     rows = cur.fetchall()
 
