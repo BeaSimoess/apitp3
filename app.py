@@ -7,6 +7,8 @@ import os
 app = Flask(__name__)   
 
 app.config['SECRET_KEY'] = 'it\xb5u\xc3\xaf\xc1Q\xb9\n\x92W\tB\xe4\xfe__\x87\x8c}\xe9\x1e\xb8\x0f'
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
+
 
 NOT_FOUND_CODE = 400
 OK_CODE = 200
@@ -169,7 +171,7 @@ def inserirTarefa():
 
 ## RETORNAR DADOS
 
-@app.route("/tarefa/consultar", methods=['POST'])
+@app.route("/tarefa/consultar", methods=['GET'])
 #@auth_user
 def retornarTarefa():
     content = request.get_json()
