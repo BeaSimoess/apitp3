@@ -174,18 +174,18 @@ def inserirTarefa():
 def retornarTarefa():
     content = request.get_json()
 
-    return "here"
-
     if "id" not in content: 
         return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
 
-    conn = db_connection()
-    cur = conn.cursor()
+    try:
+        with db_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute("SELECT * FROM tarefa WHERE id = %s;", content["id"])
+                rows = cur.fetchall()
 
-    cur.execute("SELECT * FROM tarefa WHERE id = %s;", content["id"])
-    rows = cur.fetchall()
-
-    conn.close()
+        conn.close()
+    except (Exception, psycopg2.psycopg2.DatabaseError) as error:
+        return jsonify({"Code:":NOT_FOUND_CODE, "Erro": str(error)}), NOT_FOUND_CODE
     return jsonify({"Id": rows[0][1], "Título": rows[0][2], "Descrição": rows[0][3], "Data": rows[0][4], "Hora": rows[0][5], "Estado": rows[0][6], "Lista": rows[0][7]}), OK_CODE
 
 
