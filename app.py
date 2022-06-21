@@ -270,8 +270,9 @@ def listaTarefas():
     rows = cur.fetchall()
     
     for row in rows:
-        return "here"
         arrayList.append({"id":row[0], "titulo":row[1], "descricao":row[2]})
+    return "here1"
+
     conn.close()
     return arrayList
 
