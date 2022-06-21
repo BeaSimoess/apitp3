@@ -185,7 +185,7 @@ def atualizaLista():
 def listaLista():
     content = request.get_json()
 
-    if "users_id" not in content:
+    if "user_id" not in content:
         return jsonify({"Erro": "O id não existe!"}), NOT_FOUND_CODE
 
     arrayList = []
@@ -193,7 +193,7 @@ def listaLista():
     conn = db_connection()
     cur = conn.cursor()
     
-    cur.execute("SELECT * FROM lista WHERE users_id = %s", content["users_id"])
+    cur.execute("SELECT * FROM lista WHERE users_id = %s", content["user_id"])
     rows = cur.fetchall()
     for row in rows:
         arrayList.append({"id":row[0], "titulo":row[1], "users_id":row[2]})
