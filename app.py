@@ -225,7 +225,7 @@ def removerLista():
     content = request.get_json()
 
     remove_lista = """
-                DELETE FROM tarefa WHERE id = %s;
+                DELETE FROM lista WHERE id = %s;
                 """
 #    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
     values = [content["id"]]
