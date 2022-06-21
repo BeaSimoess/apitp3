@@ -180,10 +180,9 @@ def retornarTarefa():
     cur = conn.cursor()
     
     cur.execute("SELECT * FROM tarefa WHERE id = %s;", content["id"])
-    return "here1"+content["id"]
     rows = cur.fetchall()
-
     conn.close()
+    return "here2"
     return jsonify({"Id": rows[0][1], "Título": rows[0][2], "Descrição": rows[0][3], "Data": rows[0][4], "Hora": rows[0][5], "Estado": rows[0][6], "Lista": rows[0][7]}), OK_CODE
 
 
