@@ -258,7 +258,7 @@ def removerTarefa():
 
 ## LISTAGEM TAREFAS
 
-@app.route("/tarefas/listagem", methods=['GET'])
+@app.route("/tarefa/listagem", methods=['GET'])
 #@auth_user
 def listaTarefas():
     lista_tarefas = """
@@ -271,7 +271,7 @@ def listaTarefas():
     cur.execute("SELECT * FROM tarefa")
     rows = cur.fetchall()
     conn.close()
-    return type(rows)
+    return rows
 
 
 
