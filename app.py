@@ -273,7 +273,7 @@ def listaTarefas():
         conn.close()
     except (Exception, psycopg2.DatabaseError) as error:
         return jsonify({"Code": NOT_FOUND_CODE, "Erro": error})
-    return row
+    return type(row)
 
 
 
