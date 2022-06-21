@@ -80,6 +80,8 @@ def login():
         conn.close()
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"Erro": "Utilizador não encontrado"}), NOT_FOUND_CODE
+
+    return "here"
     
     return {"Message":"Login realizado com sucesso!", "Token": token.decsode('utf-8')}, OK_CODE
 
