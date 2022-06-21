@@ -169,7 +169,7 @@ def inserirTarefa():
 
 ## RETORNAR DADOS
 
-@app.route("/tarefa/consultar", methods=['GET'])
+@app.route("/tarefa/consultar", methods=['POST'])
 #@auth_user
 def retornarTarefa():
     content = request.get_json()
