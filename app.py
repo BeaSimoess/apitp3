@@ -178,8 +178,9 @@ def retornarTarefa():
         return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
     conn = db_connection()
     cur = conn.cursor()
-    return "here"
+    
     cur.execute("SELECT * FROM tarefa WHERE id = %s;", content["id"])
+    return "here1"+content["id"]
     rows = cur.fetchall()
 
     conn.close()
