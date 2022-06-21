@@ -62,7 +62,12 @@ def login():
         return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
     # SQL Querry
-    query = """SELECT * FROM users WHERE nome = %s AND pass = %s;"""
+    query = """
+        SELECT * 
+        FROM users 
+        WHERE nome = %s 
+        AND pass = %s;
+        """
 
     # Array com parametros a atribuir à querry (nome e pass dados pelo json)
     values = [content['nome'], content['pass']]
@@ -71,17 +76,17 @@ def login():
         with db_connection() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(query, values)
-                row = cursor.fetchall()
+                row = cursor.fetchone()
                 # Criação do token com id do user e o tempo de expiração do token
                 token = jwt.encode({
-                    'id': row[0][0], 
+                    'id': row[0], 
                     'expiration': str(datetime.utcnow() + timedelta(hours=1))}, 
                     app.config['SECRET_KEY'])
         conn.close()
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"Erro": "Utilizador não encontrado"}), NOT_FOUND_CODE
     
-    return {"Message": "Login realizado com sucesso!", "Token": token.decsode('utf-8')}
+    return {"Token": token.decsode('utf-8')}, OK_CODE
 
 
 ## REGISTO
