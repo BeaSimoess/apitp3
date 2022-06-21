@@ -7,8 +7,6 @@ import os
 app = Flask(__name__)   
 
 app.config['SECRET_KEY'] = 'it\xb5u\xc3\xaf\xc1Q\xb9\n\x92W\tB\xe4\xfe__\x87\x8c}\xe9\x1e\xb8\x0f'
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
-
 
 NOT_FOUND_CODE = 400
 OK_CODE = 200
@@ -179,15 +177,15 @@ def retornarTarefa():
     if "id" not in content: 
         return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
 
-    try:
-        with db_connection() as conn:
-            with conn.cursor() as cursor:
-                cursor.execute("SELECT * FROM tarefa WHERE id = %s;", content["id"])
-                rows = cursor.fetchall()
+    return "here"
 
-        conn.close()
-    except (Exception, psycopg2.DatabaseError) as error:
-        return jsonify({"Code:":NOT_FOUND_CODE, "Erro": str(error)}), NOT_FOUND_CODE
+    conn = db_connection()
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM tarefa WHERE id = %s;", content["id"])
+    rows = cur.fetchall()
+
+    conn.close()
     return jsonify({"Id": rows[0][1], "Título": rows[0][2], "Descrição": rows[0][3], "Data": rows[0][4], "Hora": rows[0][5], "Estado": rows[0][6], "Lista": rows[0][7]}), OK_CODE
 
 
