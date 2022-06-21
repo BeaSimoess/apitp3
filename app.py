@@ -268,10 +268,9 @@ def listaTarefas():
     
     cur.execute("SELECT * FROM tarefa")
     rows = cur.fetchall()
-    
+    return arrayList
     for row in rows:
         arrayList.append({"id":row[0], "titulo":row[1], "descricao":row[2]})
-    return "here1"
 
     conn.close()
     return arrayList
