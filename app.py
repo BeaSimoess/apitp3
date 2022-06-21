@@ -1,3 +1,5 @@
+from crypt import methods
+from gc import DEBUG_COLLECTABLE
 from flask import Flask, jsonify, request
 import logging, time, psycopg2, jwt, json
 from datetime import datetime, timedelta
@@ -254,6 +256,26 @@ def removerTarefa():
     return {"Tarefa removida com sucesso! Code": OK_CODE}
 
 
+## LISTAGEM TAREFAS
+
+@app.route("/tarefas/listagem", methods=['GET'])
+#@auth_user
+def listaTarefas():
+    content = request.get_json()
+
+    lista_tarefas = """
+                SELECT * FROM tarefas
+                """
+
+    try:
+        with db_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(lista_tarefas)
+                row = cursor.fetchall()
+        conn.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        return jsonify({"Code": NOT_FOUND_CODE, "Erro": error})
+    return row
 
 
 
