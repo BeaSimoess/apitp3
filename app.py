@@ -196,19 +196,19 @@ def atualizaTarefa():
     if "contexto" not in content and "dados" not in content and "id" not in content: 
         return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
 
-    if "contexto" == "titulo":
+    if content["contexto"] == "titulo":
      update_tarefa_info = """
                 UPDATE tarefa SET titulo = %s WHERE id = %s;
                 """
-    if "contexto" == "descricao":
+    if content["contexto"] == "descricao":
         update_tarefa_info = """
                 UPDATE tarefa SET descricao = %s WHERE id = %s;
                 """
-    if "contexto" == "data":
+    if content["contexto"] == "data":
         update_tarefa_info = """
                 UPDATE tarefa SET data = %s WHERE id = %s;
                 """
-    if "contexto" == "hora":
+    if content["contexto"] == "hora":
         update_tarefa_info = """
                 UPDATE tarefa SET hora = %s WHERE id = %s;
                 """
