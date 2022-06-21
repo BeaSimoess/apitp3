@@ -184,7 +184,7 @@ def retornarTarefa():
                 rows = cursor.fetchall()
 
         conn.close()
-    except (Exception, psycopg2.psycopg2.DatabaseError) as error:
+    except (Exception, psycopg2.DatabaseError) as error:
         return jsonify({"Code:":NOT_FOUND_CODE, "Erro": str(error)}), NOT_FOUND_CODE
     return jsonify({"Id": rows[0][1], "Título": rows[0][2], "Descrição": rows[0][3], "Data": rows[0][4], "Hora": rows[0][5], "Estado": rows[0][6], "Lista": rows[0][7]}), OK_CODE
 
