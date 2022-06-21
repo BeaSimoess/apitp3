@@ -181,7 +181,7 @@ def retornarTarefa():
         with db_connection() as conn:
             with conn.cursor() as cursor:
                 cursor.execute("SELECT * FROM tarefa WHERE id = %s;", content["id"])
-                rows = cur.fetchall()
+                rows = cursor.fetchall()
 
         conn.close()
     except (Exception, psycopg2.psycopg2.DatabaseError) as error:
