@@ -174,6 +174,8 @@ def inserirTarefa():
 def retornarTarefa():
     content = request.get_json()
 
+    return "here"
+
     if "id" not in content: 
         return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
 
