@@ -85,6 +85,7 @@ def login():
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
         return jsonify({"Code": NOT_FOUND_CODE, "Erro": "Utilizador não encontrado"})
+    
     return {"Utilizador logado com sucesso! Code": OK_CODE, 'Token': token.decode('utf-8')}
   
 
@@ -134,6 +135,110 @@ def registo():
 #
 #    conn.close()
 #    return jsonify({"Id": rows[0][1], "nome": rows[0][2]})
+
+
+
+################################
+##  LISTAS
+################################
+
+## INSERIR
+
+@app.route("/lista/inserir", methods=['POST'])
+#@auth_user
+def inserirLista():
+    content = request.get_json()
+
+    if "titulo" not in content or "users_id" not in content: 
+        return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
+
+    insert_lista_info = """
+                INSERT INTO lista(id, titulo, users_id) 
+                VALUES(0, %s, %s);
+                """
+
+    values = [content["titulo"], content["users_id"]]
+
+    try:
+        with db_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(insert_lista_info, values)
+        conn.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        return jsonify({"Code": NOT_FOUND_CODE, "Erro": str(error)})
+    return {"Lista inserida com sucesso! Code": OK_CODE}
+
+
+
+## RETORNAR DADOS
+
+@app.route("/lista/consultar", methods=['GET'])
+#@auth_user
+def retornarLista():
+    content = request.get_json()
+
+    if "id" not in content: 
+        return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
+    conn = db_connection()
+    cur = conn.cursor()
+    
+    cur.execute("SELECT * FROM lista WHERE id = %s;", content["id"])
+    rows = cur.fetchall()
+    conn.close()
+    return jsonify({"Id": rows[0][0], "Título": rows[0][1], "Utilizador": rows[0][2]}), OK_CODE
+
+
+
+## ATUALIZAR DADOS
+
+@app.route("/lista/atualizar", methods=['PUT'])
+#@auth_user
+def atualizaLista():
+    content = request.get_json()
+
+    if "titulo" not in content and "id" not in content: 
+        return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
+ 
+    update_lista_info = """
+        UPDATE lista SET titulo = %s WHERE id = %s;
+         """
+  
+#    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
+    values = [content["titulo"], content["id"]]
+
+    try:
+        with db_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(update_lista_info, values)
+        conn.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        return jsonify({"Code": NOT_FOUND_CODE, "Erro": "Lista não atualizada!"})
+    return {"Lista atualizada com sucesso! Code": OK_CODE}
+
+
+
+## REMOVER
+
+@app.route("/lista/remover", methods=['DELETE'])
+#@auth_user
+def removerLista():
+    content = request.get_json()
+
+    remove_lista = """
+                DELETE FROM tarefa WHERE id = %s;
+                """
+#    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
+    values = [content["id"]]
+
+    try:
+        with db_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(remove_lista, values)
+        conn.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        return jsonify({"Code": NOT_FOUND_CODE, "Erro": "A Lista não foi removida!"})
+    return {"Lista removida com sucesso! Code": OK_CODE}
+
 
 
 
