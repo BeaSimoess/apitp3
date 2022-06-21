@@ -1,3 +1,5 @@
+from crypt import methods
+from gc import DEBUG_COLLECTABLE
 from flask import Flask, jsonify, request
 import logging, time, psycopg2, jwt, json
 from datetime import datetime, timedelta
@@ -359,6 +361,21 @@ def removerTarefa():
     return {"Tarefa removida com sucesso! Code": OK_CODE}
 
 
+## LISTAGEM TAREFAS
+
+@app.route("/tarefa/listagem", methods=['GET'])
+#@auth_user
+def listaTarefas():
+    arrayList = []
+    conn = db_connection()
+    cur = conn.cursor()
+    
+    cur.execute("SELECT * FROM tarefa")
+    rows = cur.fetchall()
+    for i in rows:
+        arrayList.append({"id":i[0], "titulo":i[1], "descricao":i[2]})
+    conn.close()
+    return json.dumps(arrayList)
 
 
 
