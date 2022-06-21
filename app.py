@@ -216,6 +216,28 @@ def atualizaLista():
     return {"Lista atualizada com sucesso! Code": OK_CODE}
 
 
+## LISTAGEM 
+
+@app.route("/lista/listagem", methods=['GET'])
+#@auth_user
+def listaLista():
+    arrayList = []
+    content = request.get_json()
+
+    if "users_id" not in content:
+        return jsonify({"Code": NOT_FOUND_CODE, "Erro": "O id não existe!"})
+    
+    conn = db_connection()
+    cur = conn.cursor()
+    
+    cur.execute("SELECT * FROM lista WHERE users_id = %s", content["users_id"])
+    rows = cur.fetchall()
+    for i in rows:
+        arrayList.append({"id":i[0], "titulo":i[1], "users_id":i[2]})
+    conn.close()
+    return json.dumps(arrayList)
+
+
 
 ## REMOVER
 
@@ -361,7 +383,8 @@ def removerTarefa():
     return {"Tarefa removida com sucesso! Code": OK_CODE}
 
 
-## LISTAGEM TAREFAS
+
+## LISTAGEM 
 
 @app.route("/tarefa/listagem", methods=['GET'])
 #@auth_user
