@@ -197,7 +197,7 @@ def atualizaTarefa():
         return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
 
     if content["contexto"] == "titulo":
-     update_tarefa_info = """
+        update_tarefa_info = """
                 UPDATE tarefa SET titulo = %s WHERE id = %s;
                 """
     if content["contexto"] == "descricao":
@@ -211,6 +211,10 @@ def atualizaTarefa():
     if content["contexto"] == "hora":
         update_tarefa_info = """
                 UPDATE tarefa SET hora = %s WHERE id = %s;
+                """
+    if content["contexto"] == "estado":
+        update_tarefa_info = """
+                UPDATE tarefa SET estado = %s WHERE id = %s;
                 """
 
 #    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
@@ -227,37 +231,9 @@ def atualizaTarefa():
 
 
 
-
-## ATUALIZAR ESTADO
-
-@app.route("/tarefa/atualizarEstado", methods=['POST'])
-#@auth_user
-def atualizarEstado():
-    content = request.get_json()
-
-    if "estado" not in content: 
-        return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
-
-    update_tarefa_estado = """
-                UPDATE tarefa SET estado = %s, email = %s WHERE id = %s;
-                """
-    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
-    values = [content["estado"], decoded_token["id"]]
-
-    try:
-        with db_connection() as conn:
-            with conn.cursor() as cursor:
-                cursor.execute(update_tarefa_estado, values)
-        conn.close()
-    except (Exception, psycopg2.DatabaseError) as error:
-        return jsonify({"Code": NOT_FOUND_CODE, "Erro": "Tarefa não atualizada!"})
-    return {"Tarefa atualizada com sucesso! Code": OK_CODE}
-
-
-
 ## REMOVER
 
-@app.route("/tarefa/remover", methods=['POST'])
+@app.route("/tarefa/remover", methods=['DELETE'])
 #@auth_user
 def removerTarefa():
     content = request.get_json()
@@ -265,8 +241,8 @@ def removerTarefa():
     remove_tarefa = """
                 DELETE FROM tarefa WHERE id = %s;
                 """
-    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
-    values = [decoded_token["id"]]
+#    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
+    values = [content["id"]]
 
     try:
         with db_connection() as conn:
