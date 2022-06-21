@@ -30,13 +30,12 @@ def home():
 def auth_user(func):
     @wraps(func)
     def decorated(*args, **kwargs):
-        content = request.headers.get('Authorization')
+        token = request.headers.get('Authorization')
         #verificar se o token tem conteúdo ou não
-        if content is None or "token" not in content or not content["token"]:
+        if not token:
             return jsonify({'Erro': 'Token está em falta!', 'Code': UNAUTHORIZED_CODE})
 
         try:
-            token = content["token"]
             data = jwt.decode(token, app.config['SECRET_KEY'])    
             #verificar a data de expiração do token
             if(data["expiration"] < str(datetime.utcnow())):
