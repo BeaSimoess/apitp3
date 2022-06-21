@@ -104,7 +104,7 @@ def registo():
     except (Exception, psycopg2.DatabaseError) as error:
         return jsonify({"Erro": str(error)}), NOT_FOUND_CODE
 
-    return {"Message": "Utilizador registado com sucesso!"}, OK_CODE
+    return jsonify({"Message": "Utilizador registado com sucesso!"}), OK_CODE
 
 
 ################################
@@ -132,7 +132,7 @@ def inserirLista():
     except (Exception, psycopg2.DatabaseError) as error:
         return jsonify({"Erro": str(error)}), NOT_FOUND_CODE
 
-    return {"Message": "Lista inserida com sucesso!"}, OK_CODE
+    return jsonify({"Message": "Lista inserida com sucesso!"}), OK_CODE
 
 
 ## RETORNAR DADOS
@@ -176,7 +176,7 @@ def atualizaLista():
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"Erro": "Lista não atualizada!"}), NOT_FOUND_CODE
 
-    return {"Message": "Lista atualizada com sucesso!"}, OK_CODE
+    return jsonify({"Message": "Lista atualizada com sucesso!"}), OK_CODE
 
 
 ## LISTAGEM 
@@ -200,7 +200,6 @@ def listaLista():
     conn.close()
 
     return jsonify(arrayList), OK_CODE
-#    return json.dumps(arrayList)
 
 
 ## REMOVER
@@ -222,7 +221,7 @@ def removerLista():
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"Erro": "A Lista não foi removida!"}), NOT_FOUND_CODE
 
-    return {"Message": "Lista removida com sucesso! Code"}, OK_CODE
+    return jsonify({"Message": "Lista removida com sucesso!"}), OK_CODE
 
 
 ################################
@@ -250,7 +249,7 @@ def inserirTarefa():
     except (Exception, psycopg2.DatabaseError) as error:
         return jsonify({"Erro": str(error)}), NOT_FOUND_CODE
         
-    return {"Message": "Tarefa inserida com sucesso!"}, OK_CODE
+    return jsonify({"Message": "Tarefa inserida com sucesso!"}), OK_CODE
 
 
 ## RETORNAR DADOS
@@ -308,7 +307,7 @@ def atualizaTarefa():
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"Erro": "Tarefa não atualizada!"}), NOT_FOUND_CODE
 
-    return {"Message": "Tarefa atualizada com sucesso!"}, OK_CODE
+    return jsonify({"Message": "Tarefa atualizada com sucesso!"}), OK_CODE
 
 
 ## REMOVER
@@ -327,7 +326,7 @@ def removerTarefa():
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"Erro": "A Tarefa não foi removida!"}), NOT_FOUND_CODE
     
-    return {"Message": "Tarefa removida com sucesso!"}, OK_CODE
+    return jsonify({"Message": "Tarefa removida com sucesso!"}), OK_CODE
 
 
 ## LISTAGEM 
@@ -350,7 +349,7 @@ def listaTarefas():
         arrayList.append({"id":row[0], "titulo":row[1], "descricao":row[2], "data":row[3], "hora":row[4], "estado":row[5], "lista_id":row[6]})
 
     conn.close()
-    return json.dumps(arrayList)
+    return jsonify(arrayList), OK_CODE
 
 
 ##########################################################
