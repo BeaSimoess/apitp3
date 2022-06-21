@@ -188,33 +188,33 @@ def retornarTarefa():
 
 ## ATUALIZAR DADOS
 
-@app.route("/tarefa/atualizar", methods=['POST'])
+@app.route("/tarefa/atualizar", methods=['PUT'])
 #@auth_user
 def atualizaTarefa():
     content = request.get_json()
 
-    if "contexto" not in content or "dados" not in content: 
+    if "contexto" not in content and "dados" not in content and "id" not in content: 
         return jsonify({"Code": BAD_REQUEST_CODE, "Erro": "Parâmetros inválidos"})
 
     if "contexto" == "titulo":
      update_tarefa_info = """
                 UPDATE tarefa SET titulo = %s WHERE id = %s;
                 """
-     if "contexto" == "descricao":
+    if "contexto" == "descricao":
         update_tarefa_info = """
                 UPDATE tarefa SET descricao = %s WHERE id = %s;
                 """
-     if "contexto" == "data":
+    if "contexto" == "data":
         update_tarefa_info = """
                 UPDATE tarefa SET data = %s WHERE id = %s;
                 """
-     if "contexto" == "hora":
+    if "contexto" == "hora":
         update_tarefa_info = """
                 UPDATE tarefa SET hora = %s WHERE id = %s;
                 """
 
-    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
-    values = [content["contexto"], content["dados"], decoded_token["id"]]
+#    decoded_token = jwt.decode(content['token'], app.config['SECRET_KEY'])
+    values = [content["dados"], content["id"]]
 
     try:
         with db_connection() as conn:
