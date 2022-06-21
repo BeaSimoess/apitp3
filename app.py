@@ -261,8 +261,6 @@ def removerTarefa():
 @app.route("/tarefas/listagem", methods=['GET'])
 #@auth_user
 def listaTarefas():
-    content = request.get_json()
-
     lista_tarefas = """
                 SELECT * FROM tarefas
                 """
