@@ -261,7 +261,7 @@ def removerTarefa():
 @app.route("/tarefa/listagem", methods=['GET'])
 #@auth_user
 def listaTarefas():
-    arrayList = {}
+    arrayList = ["bea", "raul"]
 
     conn = db_connection()
     cur = conn.cursor()
