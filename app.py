@@ -261,6 +261,7 @@ def removerTarefa():
 @app.route("/tarefa/listagem", methods=['GET'])
 #@auth_user
 def listaTarefas():
+    arrayList = []
     lista_tarefas = """
                 SELECT * FROM tarefas
                 """
@@ -270,8 +271,10 @@ def listaTarefas():
     
     cur.execute("SELECT * FROM tarefa")
     rows = cur.fetchall()
+    for i in rows:
+        arrayList.append(i)
     conn.close()
-    return rows
+    return arrayList
 
 
 
