@@ -173,7 +173,7 @@ def inserirLista():
 ## RETORNAR DADOS
 
 @app.route("/lista/consultar", methods=['GET'])
-#@auth_user
+@auth_user
 def retornarLista():
     content = request.get_json()
 
