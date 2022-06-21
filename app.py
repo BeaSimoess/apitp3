@@ -265,15 +265,13 @@ def listaTarefas():
                 SELECT * FROM tarefas
                 """
 
-    try:
-        with db_connection() as conn:
-            with conn.cursor() as cursor:
-                cursor.execute(lista_tarefas)
-                row = cursor.fetchall()
-        conn.close()
-    except (Exception, psycopg2.DatabaseError) as error:
-        return jsonify({"Code": NOT_FOUND_CODE, "Erro": error})
-    return type(row)
+    conn = db_connection()
+    cur = conn.cursor()
+    
+    cur.execute("SELECT * FROM tarefa")
+    rows = cur.fetchall()
+    conn.close()
+    return type(rows)
 
 
 
