@@ -262,19 +262,16 @@ def removerTarefa():
 #@auth_user
 def listaTarefas():
     arrayList = []
-    lista_tarefas = """
-                SELECT * FROM tarefas
-                """
 
     conn = db_connection()
     cur = conn.cursor()
     
     cur.execute("SELECT * FROM tarefa")
     rows = cur.fetchall()
-    for i in rows:
-        arrayList.append(i)
+    for row in rows:
+        arrayList.append({"id":row[0], "titulo":row[1], "descricao":row[2]})
     conn.close()
-    return arrayList
+    return {arrayList}
 
 
 
