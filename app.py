@@ -366,7 +366,7 @@ def removerTarefa():
 @app.route("/tarefa/listagem", methods=['GET'])
 #@auth_user
 def listaTarefas():
-#    arrayList = []
+    arrayList = []
     content = request.get_json()
 
     if "lista_id" not in content:
