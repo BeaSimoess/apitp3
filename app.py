@@ -261,19 +261,13 @@ def removerTarefa():
 @app.route("/tarefa/listagem", methods=['GET'])
 #@auth_user
 def listaTarefas():
-    arrayList = ["bea", "raul"]
-
     conn = db_connection()
     cur = conn.cursor()
     
     cur.execute("SELECT * FROM tarefa")
     rows = cur.fetchall()
-    return arrayList
-    for row in rows:
-        arrayList.append({"id":row[0], "titulo":row[1], "descricao":row[2]})
-
     conn.close()
-    return arrayList
+    return json.dumps(rows)
 
 
 
