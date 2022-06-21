@@ -62,12 +62,7 @@ def login():
         return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
     # SQL Querry
-    query = """
-        SELECT * 
-        FROM users 
-        WHERE nome = %s 
-        AND pass = %s;
-        """
+    query = """SELECT * FROM users WHERE nome = %s AND pass = %s;"""
 
     # Array com parametros a atribuir à querry (nome e pass dados pelo json)
     values = [content['nome'], content['pass']]
@@ -86,7 +81,7 @@ def login():
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"Erro": "Utilizador não encontrado"}), NOT_FOUND_CODE
     
-    return {"Token": token.decsode('utf-8')}, OK_CODE
+    return jsonify({"Message": "Login realizado com sucesso!", "Token": token.decode('utf-8')}), OK_CODE
 
 
 ## REGISTO
