@@ -205,6 +205,8 @@ def listaLista():
         arrayList.append({"id":row[0], "titulo":row[1], "user_id":row[2]})
     conn.close()
 
+    return "here"
+
     return jsonify(arrayList), OK_CODE
 
 
