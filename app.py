@@ -126,6 +126,8 @@ def inserirLista():
 
     query = """INSERT INTO lista(titulo, user_id) VALUES(%s, %s);"""
 
+    return decoded_token['id']
+
     values = [content['titulo'], decoded_token['id']]
 
     try:
