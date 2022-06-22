@@ -196,7 +196,7 @@ def listaLista():
 
     arrayList = []
 
-    return "here"
+    return decoded_token['id']
     
     conn = db_connection()
     cur = conn.cursor()
