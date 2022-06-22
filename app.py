@@ -264,7 +264,7 @@ def retornarTarefa():
     conn = db_connection()
     cur = conn.cursor()
     
-    cur.execute("SELECT * FROM tarefa WHERE id = %s;", content["id"])
+    cur.execute("SELECT * FROM tarefa WHERE id = %s;", content['id'])
     row = cur.fetchone()
 
     conn.close()
@@ -321,7 +321,7 @@ def removerTarefa():
     try:
         with db_connection() as conn:
             with conn.cursor() as cursor:
-                cursor.execute(query, content["id"])
+                cursor.execute(query, content['id'])
         conn.close()
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"Erro": "A Tarefa não foi removida!"}), NOT_FOUND_CODE
@@ -343,7 +343,7 @@ def listaTarefas():
     conn = db_connection()
     cur = conn.cursor()
     
-    cur.execute("SELECT * FROM tarefa WHERE lista_id = %s", content["lista_id"])
+    cur.execute("SELECT * FROM tarefa WHERE lista_id = %s", content['lista_id'])
     rows = cur.fetchall()
     for row in rows:
         arrayList.append({"id":row[0], "titulo":row[1], "descricao":row[2], "data":row[3], "hora":row[4], "estado":row[5], "lista_id":row[6]})
