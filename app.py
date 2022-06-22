@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'it\xb5u\xc3\xaf\xc1Q\xb9\n\x92W\tB\xe4\xfe__\x87\x8c}\xe9\x1e\xb8\x0f'
 
-NOT_FOUND_CODE = 400
+NOT_FOUND_CODE = 404
 OK_CODE = 200
 SUCCESS_CODE = 201
 BAD_REQUEST_CODE = 400
