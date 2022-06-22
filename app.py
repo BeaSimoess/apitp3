@@ -126,8 +126,6 @@ def inserirLista():
 
     query = """INSERT INTO lista(titulo, user_id) VALUES(%s, %s);"""
 
-    return jsonify(decoded_token['id'])
-
     values = [content['titulo'], decoded_token['id']]
 
     try:
@@ -197,8 +195,6 @@ def listaLista():
         return jsonify({"Erro": "O id não existe!"}), NOT_FOUND_CODE
 
     arrayList = []
-
-    return decoded_token['id']
     
     conn = db_connection()
     cur = conn.cursor()
