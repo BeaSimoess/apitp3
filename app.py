@@ -194,12 +194,14 @@ def listaLista():
     if "id" not in decoded_token:
         return jsonify({"Erro": "O id não existe!"}), NOT_FOUND_CODE
 
+    values = [decoded_token['id']]
+
     arrayList = []
     
     conn = db_connection()
     cur = conn.cursor()
     
-    cur.execute("SELECT * FROM lista WHERE user_id = %s", decoded_token['id'])
+    cur.execute("SELECT * FROM lista WHERE user_id = %s", values)
     rows = cur.fetchall()
 
     return "here"
