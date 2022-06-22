@@ -92,7 +92,7 @@ def registo():
     if "nome" not in content or "pass" not in content: 
         return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
-    query = """INSERT INTO users(id, nome, pass) VALUES(0, %s, %s);"""
+    query = """INSERT INTO users(nome, pass) VALUES(%s, %s);"""
 
     values = [content['nome'], content['pass']]
 
