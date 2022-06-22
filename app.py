@@ -204,8 +204,6 @@ def listaLista():
     cur.execute("SELECT * FROM lista WHERE user_id = %s", values)
     rows = cur.fetchall()
 
-    return "here"
-
     for row in rows:
         arrayList.append({"id":row[0], "titulo":row[1], "user_id":row[2]})
     conn.close()
