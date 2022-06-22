@@ -126,7 +126,7 @@ def inserirLista():
 
     query = """INSERT INTO lista(titulo, user_id) VALUES(%s, %s);"""
 
-    return decoded_token['id']
+    return jsonify(decoded_token)
 
     values = [content['titulo'], decoded_token['id']]
 
