@@ -116,13 +116,16 @@ def registo():
 @auth_user
 def inserirLista():
     content = request.get_json()
+    token = request.headers.get('Token')
 
-    if "titulo" not in content or "user_id" not in content: 
+    decoded_token = jwt.decode(token, app.config['SECRET_KEY'])
+
+    if "titulo" not in content or "id" not in decoded_token: 
         return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
     query = """INSERT INTO lista(titulo, user_id) VALUES(%s, %s);"""
 
-    values = [content['titulo'], content['user_id']]
+    values = [content['titulo'], decoded_token['id']]
 
     try:
         with db_connection() as conn:
