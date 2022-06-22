@@ -117,12 +117,12 @@ def registo():
 def inserirLista():
     content = request.get_json()
 
-    if "titulo" not in content or "users_id" not in content: 
+    if "titulo" not in content or "user_id" not in content: 
         return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
-    query = """INSERT INTO lista(id, titulo, users_id) VALUES(0, %s, %s);"""
+    query = """INSERT INTO lista(id, titulo, user_id) VALUES(0, %s, %s);"""
 
-    values = [content['titulo'], content['users_id']]
+    values = [content['titulo'], content['user_id']]
 
     try:
         with db_connection() as conn:
@@ -193,10 +193,10 @@ def listaLista():
     conn = db_connection()
     cur = conn.cursor()
     
-    cur.execute("SELECT * FROM lista WHERE users_id = %s", content["user_id"])
+    cur.execute("SELECT * FROM lista WHERE user_id = %s", content["user_id"])
     rows = cur.fetchall()
     for row in rows:
-        arrayList.append({"id":row[0], "titulo":row[1], "users_id":row[2]})
+        arrayList.append({"id":row[0], "titulo":row[1], "user_id":row[2]})
     conn.close()
 
     return jsonify(arrayList), OK_CODE
