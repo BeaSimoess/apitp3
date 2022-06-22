@@ -120,7 +120,7 @@ def inserirLista():
     if "titulo" not in content or "user_id" not in content: 
         return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
-    query = """INSERT INTO lista(id, titulo, user_id) VALUES(0, %s, %s);"""
+    query = """INSERT INTO lista(titulo, user_id) VALUES(%s, %s);"""
 
     values = [content['titulo'], content['user_id']]
 
@@ -237,7 +237,7 @@ def inserirTarefa():
     if "titulo" not in content or "descricao" not in content or "data" not in content or "hora" not in content or "estado" not in content or "lista_id" not in content: 
         return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
-    query = """INSERT INTO tarefa(id, titulo, descricao, data, hora, estado, lista_id) VALUES(0, %s, %s, %s, %s, %s, %s);"""
+    query = """INSERT INTO tarefa(titulo, descricao, data, hora, estado, lista_id) VALUES(%s, %s, %s, %s, %s, %s);"""
 
     values = [content['titulo'], content['descricao'], content['data'], content['hora'], content['estado'], content['lista_id']]
 
