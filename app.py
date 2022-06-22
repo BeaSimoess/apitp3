@@ -1,3 +1,4 @@
+from base64 import decode
 from crypt import methods
 from gc import DEBUG_COLLECTABLE
 from flask import Flask, jsonify, request
@@ -186,9 +187,11 @@ def atualizaLista():
 @app.route("/lista/listagem", methods=['GET'])
 @auth_user
 def listaLista():
-    content = request.get_json()
+    token = request.headers.get('Token')
 
-    if "user_id" not in content:
+    decoded_token = jwt.decode(token, app.config['SECRET_KEY'])
+
+    if "id" not in decoded_token:
         return jsonify({"Erro": "O id não existe!"}), NOT_FOUND_CODE
 
     arrayList = []
@@ -196,7 +199,7 @@ def listaLista():
     conn = db_connection()
     cur = conn.cursor()
     
-    cur.execute("SELECT * FROM lista WHERE user_id = %s", content["user_id"])
+    cur.execute("SELECT * FROM lista WHERE user_id = %s", decoded_token['id'])
     rows = cur.fetchall()
     for row in rows:
         arrayList.append({"id":row[0], "titulo":row[1], "user_id":row[2]})
