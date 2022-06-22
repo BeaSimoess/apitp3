@@ -141,7 +141,7 @@ def inserirLista():
 def retornarLista():
     content = request.get_json()
 
-    if "user_id" not in content: 
+    if "id" not in content: 
         return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
     conn = db_connection()
@@ -208,7 +208,7 @@ def listaLista():
 def removerLista():
     content = request.get_json()
 
-    if "user_id" not in content:
+    if "id" not in content:
         return jsonify({"Erro": "O id não existe!"}), NOT_FOUND_CODE
 
     query = """DELETE FROM lista WHERE id = %s;"""
@@ -216,7 +216,7 @@ def removerLista():
     try:
         with db_connection() as conn:
             with conn.cursor() as cursor:
-                cursor.execute(query, content['user_id'])
+                cursor.execute(query, content['id'])
         conn.close()
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"Erro": "A Lista não foi removida!"}), NOT_FOUND_CODE
