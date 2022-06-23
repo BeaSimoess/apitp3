@@ -59,7 +59,7 @@ def login():
 
     # Verificar se o json contem var nome e pass
     if "nome" not in content or "pass" not in content:
-        return jsonify({"message": "Parâmetros inválidos"}), BAD_REQUEST_CODE
+        return jsonify({"message": "Parametros invalidos!"}), BAD_REQUEST_CODE
 
     # SQL Querry
     query = """SELECT * FROM users WHERE nome = %s AND pass = %s;"""
@@ -79,7 +79,7 @@ def login():
                     app.config['SECRET_KEY'])
         conn.close()
     except (Exception, psycopg2.DatabaseError):
-        return jsonify({"message": "Utilizador não encontrado"}), NOT_FOUND_CODE
+        return jsonify({"message": "Utilizador nao encontrado"}), NOT_FOUND_CODE
     
     return jsonify({"message": "Login realizado com sucesso!", "token": token.decode('utf-8')}), OK_CODE
 
