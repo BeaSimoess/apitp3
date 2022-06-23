@@ -102,7 +102,7 @@ def registo():
                 cursor.execute(query, values)
         conn.close()
     except (Exception, psycopg2.DatabaseError) as error:
-        return jsonify({"message": "Não foi possivel efectuar o registo!"}), NOT_FOUND_CODE
+        return jsonify({"message": str(error)}), NOT_FOUND_CODE
 
     return jsonify({"message": "Utilizador registado com sucesso!"}), OK_CODE
 
