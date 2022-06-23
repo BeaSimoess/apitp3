@@ -24,11 +24,6 @@ SERVER_ERROR = 500
 def home():
     return "Bem vindo à API!"
 
-@app.route('/test', methods = ["POST"])
-def test():
-    content = request.get_json()
-    return content
-
 ##########################################################
 ## VERIFICAÇÃO TOKEN
 ##########################################################
@@ -39,17 +34,17 @@ def auth_user(func):
 
         # Verificar se a mensagem contem token
         if not token:
-            return jsonify({"Erro": "Token está em falta!"}), UNAUTHORIZED_CODE
+            return jsonify({"message": "Token está em falta!"}), UNAUTHORIZED_CODE
 
         try:
             # Verificar se o token é válido
             data = jwt.decode(token, app.config['SECRET_KEY'])
             # Verificar a validade (tempo) do token
             if(data['expiration'] < str(datetime.utcnow())):
-                return jsonify({"Erro": "O Token expirou!"}), NOT_FOUND_CODE
+                return jsonify({"message": "O Token expirou!"}), NOT_FOUND_CODE
 
         except Exception as e:
-            return jsonify({"Erro": "Token inválido"}), FORBIDDEN_CODE
+            return jsonify({"message": "Token inválido"}), FORBIDDEN_CODE
         return func(*args, **kwargs)
     return decorated
 
@@ -64,7 +59,7 @@ def login():
 
     # Verificar se o json contem var nome e pass
     if "nome" not in content or "pass" not in content:
-        return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
+        return jsonify({"message": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
     # SQL Querry
     query = """SELECT * FROM users WHERE nome = %s AND pass = %s;"""
@@ -84,9 +79,9 @@ def login():
                     app.config['SECRET_KEY'])
         conn.close()
     except (Exception, psycopg2.DatabaseError):
-        return jsonify({"Erro": "Utilizador não encontrado"}), NOT_FOUND_CODE
+        return jsonify({"message": "Utilizador não encontrado"}), NOT_FOUND_CODE
     
-    return jsonify({"Message": "Login realizado com sucesso!", "Token": token.decode('utf-8')}), OK_CODE
+    return jsonify({"message": "Login realizado com sucesso!", "token": token.decode('utf-8')}), OK_CODE
 
 
 ## REGISTO
@@ -95,7 +90,7 @@ def registo():
     content = request.get_json()
 
     if "nome" not in content or "pass" not in content: 
-        return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
+        return jsonify({"message": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
     query = """INSERT INTO users(nome, pass) VALUES(%s, %s);"""
 
@@ -107,9 +102,9 @@ def registo():
                 cursor.execute(query, values)
         conn.close()
     except (Exception, psycopg2.DatabaseError) as error:
-        return jsonify({"Erro": str(error)}), NOT_FOUND_CODE
+        return jsonify({"message": str(error)}), NOT_FOUND_CODE
 
-    return jsonify({"Message": "Utilizador registado com sucesso!"}), OK_CODE
+    return jsonify({"message": "Utilizador registado com sucesso!"}), OK_CODE
 
 
 ################################
@@ -126,7 +121,7 @@ def inserirLista():
     decoded_token = jwt.decode(token, app.config['SECRET_KEY'])
 
     if "titulo" not in content or "id" not in decoded_token: 
-        return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
+        return jsonify({"message": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
     query = """INSERT INTO lista(titulo, user_id) VALUES(%s, %s);"""
 
@@ -138,9 +133,9 @@ def inserirLista():
                 cursor.execute(query, values)
         conn.close()
     except (Exception, psycopg2.DatabaseError) as error:
-        return jsonify({"Erro": str(error)}), NOT_FOUND_CODE
+        return jsonify({"message": str(error)}), NOT_FOUND_CODE
 
-    return jsonify({"Message": "Lista inserida com sucesso!"}), OK_CODE
+    return jsonify({"message": "Lista inserida com sucesso!"}), OK_CODE
 
 
 ## RETORNAR DADOS
@@ -150,7 +145,7 @@ def retornarLista():
     content = request.get_json()
 
     if "id" not in content: 
-        return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
+        return jsonify({"message": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
     conn = db_connection()
     cur = conn.cursor()
@@ -170,7 +165,7 @@ def atualizaLista():
     content = request.get_json()
 
     if "titulo" not in content and "id" not in content: 
-        return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
+        return jsonify({"message": "Parâmetros inválidos"}), BAD_REQUEST_CODE
  
     query = """UPDATE lista SET titulo = %s WHERE id = %s;"""
   
@@ -182,9 +177,9 @@ def atualizaLista():
                 cursor.execute(query, values)
         conn.close()
     except (Exception, psycopg2.DatabaseError):
-        return jsonify({"Erro": "Lista não atualizada!"}), NOT_FOUND_CODE
+        return jsonify({"message": "Lista não atualizada!"}), NOT_FOUND_CODE
 
-    return jsonify({"Message": "Lista atualizada com sucesso!"}), OK_CODE
+    return jsonify({"message": "Lista atualizada com sucesso!"}), OK_CODE
 
 
 ## LISTAGEM 
@@ -196,7 +191,7 @@ def listaLista():
     decoded_token = jwt.decode(token, app.config['SECRET_KEY'])
 
     if "id" not in decoded_token:
-        return jsonify({"Erro": "O id não existe!"}), NOT_FOUND_CODE
+        return jsonify({"message": "O id não existe!"}), NOT_FOUND_CODE
 
     values = [decoded_token['id']]
 
@@ -212,7 +207,7 @@ def listaLista():
         arrayList.append({"id":row[0], "titulo":row[1], "user_id":row[2]})
     conn.close()
 
-    return jsonify({"listas":arrayList}), OK_CODE
+    return jsonify({"listas":arrayList, "message":"listas utilizador"}), OK_CODE
 
 
 ## REMOVER
@@ -222,7 +217,7 @@ def removerLista():
     content = request.get_json()
 
     if "id" not in content:
-        return jsonify({"Erro": "O id não existe!"}), NOT_FOUND_CODE
+        return jsonify({"message": "O id não existe!"}), NOT_FOUND_CODE
 
     query = """DELETE FROM lista WHERE id = %s;"""
 
@@ -232,9 +227,9 @@ def removerLista():
                 cursor.execute(query, content['id'])
         conn.close()
     except (Exception, psycopg2.DatabaseError):
-        return jsonify({"Erro": "A Lista não foi removida!"}), NOT_FOUND_CODE
+        return jsonify({"message": "A Lista não foi removida!"}), NOT_FOUND_CODE
 
-    return jsonify({"Message": "Lista removida com sucesso!"}), OK_CODE
+    return jsonify({"message": "Lista removida com sucesso!"}), OK_CODE
 
 
 ################################
@@ -248,7 +243,7 @@ def inserirTarefa():
     content = request.get_json()
 
     if "titulo" not in content or "descricao" not in content or "data" not in content or "hora" not in content or "estado" not in content or "lista_id" not in content: 
-        return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
+        return jsonify({"message": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
     query = """INSERT INTO tarefa(titulo, descricao, data, hora, estado, lista_id) VALUES(%s, %s, %s, %s, %s, %s);"""
 
@@ -260,9 +255,9 @@ def inserirTarefa():
                 cursor.execute(query, values)
         conn.close()
     except (Exception, psycopg2.DatabaseError) as error:
-        return jsonify({"Erro": str(error)}), NOT_FOUND_CODE
+        return jsonify({"message": str(error)}), NOT_FOUND_CODE
         
-    return jsonify({"Message": "Tarefa inserida com sucesso!"}), OK_CODE
+    return jsonify({"message": "Tarefa inserida com sucesso!"}), OK_CODE
 
 
 ## RETORNAR DADOS
@@ -272,7 +267,7 @@ def retornarTarefa():
     content = request.get_json()
 
     if "id" not in content: 
-        return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
+        return jsonify({"message": "Parâmetros inválidos"}), BAD_REQUEST_CODE
     
     conn = db_connection()
     cur = conn.cursor()
@@ -293,7 +288,7 @@ def atualizaTarefa():
     content = request.get_json()
 
     if "contexto" not in content and "dados" not in content and "lista_id" not in content: 
-        return jsonify({"Erro": "Parâmetros inválidos"}), BAD_REQUEST_CODE
+        return jsonify({"message": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
     if content['contexto'] == "titulo":
         query = """UPDATE tarefa SET titulo = %s WHERE id = %s;"""
@@ -318,9 +313,9 @@ def atualizaTarefa():
                 cursor.execute(query, values)
         conn.close()
     except (Exception, psycopg2.DatabaseError):
-        return jsonify({"Erro": "Tarefa não atualizada!"}), NOT_FOUND_CODE
+        return jsonify({"message": "Tarefa não atualizada!"}), NOT_FOUND_CODE
 
-    return jsonify({"Message": "Tarefa atualizada com sucesso!"}), OK_CODE
+    return jsonify({"message": "Tarefa atualizada com sucesso!"}), OK_CODE
 
 
 ## REMOVER
@@ -337,9 +332,9 @@ def removerTarefa():
                 cursor.execute(query, content['id'])
         conn.close()
     except (Exception, psycopg2.DatabaseError):
-        return jsonify({"Erro": "A Tarefa não foi removida!"}), NOT_FOUND_CODE
+        return jsonify({"message": "A Tarefa não foi removida!"}), NOT_FOUND_CODE
     
-    return jsonify({"Message": "Tarefa removida com sucesso!"}), OK_CODE
+    return jsonify({"message": "Tarefa removida com sucesso!"}), OK_CODE
 
 
 ## LISTAGEM 
@@ -349,7 +344,7 @@ def listaTarefas():
     content = request.get_json()
 
     if "lista_id" not in content:
-        return jsonify({"Erro": "O id não existe!"}), NOT_FOUND_CODE
+        return jsonify({"message": "O id não existe!"}), NOT_FOUND_CODE
 
     arrayList = []
     
