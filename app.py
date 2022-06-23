@@ -81,7 +81,7 @@ def login():
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"message": "Utilizador não encontrado"}), NOT_FOUND_CODE
     
-    return jsonify({"msg": "Login realizado com sucesso!", "token": token.decode('utf-8')}), OK_CODE
+    return jsonify({"message": "Login realizado com sucesso!", "token": token.decode('utf-8')}), OK_CODE
 
 
 ## REGISTO
