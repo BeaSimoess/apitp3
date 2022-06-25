@@ -214,7 +214,7 @@ def listaLista():
 @app.route("/lista", methods=['DELETE'])
 @auth_user
 def removerLista():
-    content = request.get_json()
+    content = request.args.get('id')
 
     if "id" not in content:
         return jsonify({"message": "O id não existe!"}), NOT_FOUND_CODE
