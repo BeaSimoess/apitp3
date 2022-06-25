@@ -249,12 +249,12 @@ def removerLista():
 def inserirTarefa():
     content = request.get_json()
 
-    if "titulo" not in content or "descricao" not in content or "data" not in content or "hora" not in content or "estado" not in content or "lista_id" not in content: 
+    if "titulo" not in content or "descricao" not in content or "data" not in content or "hora" not in content or "estado" not in content or "lista" not in content: 
         return jsonify({"message": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
     query = """INSERT INTO tarefa(titulo, descricao, data, hora, estado, lista_id) VALUES(%s, %s, %s, %s, %s, %s);"""
 
-    values = [content['titulo'], content['descricao'], content['data'], content['hora'], content['estado'], content['lista_id']]
+    values = [content['titulo'], content['descricao'], content['data'], content['hora'], content['estado'], content['lista']]
 
     try:
         with db_connection() as conn:
