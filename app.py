@@ -219,19 +219,17 @@ def listaLista():
 @app.route("/lista", methods=['DELETE'])
 @auth_user
 def removerLista():
-    content = request.args.get()
+    content = request.args.get('id')
 
-    if "id" not in content:
+    if not content:
         return jsonify({"message": "O id não existe!"}), NOT_FOUND_CODE
 
     query = """DELETE FROM lista WHERE id = %s;"""
 
-    values = content 
-
     try:
         with db_connection() as conn:
             with conn.cursor() as cursor:
-                cursor.execute(query, values)
+                cursor.execute(query, content)
         conn.close()
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"message": "A Lista não foi removida!"}), NOT_FOUND_CODE
