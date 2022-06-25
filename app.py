@@ -289,12 +289,12 @@ def retornarTarefa():
 def atualizaTarefa():
     content = request.get_json()
 
-    if "titulo" not in content and "descricao" not in content and "data" not in content and "hora" not in content and "estado" not in content and "lista_id" not in content:
+    if "id" not in content and "titulo" not in content and "descricao" not in content and "data" not in content and "hora" not in content and "estado" not in content:
         return jsonify({"message": "Parâmetros inválidos"}), BAD_REQUEST_CODE
     
     query = """UPDATE tarefa SET titulo = %s, descricao = %s, data = %s, hora = %s, estado = %s WHERE id = %s;"""
 
-    values = [content['titulo'], content['descricao'], content['data'], content['hora'], content['estado'], content['lista_id']]
+    values = [content['titulo'], content['descricao'], content['data'], content['hora'], content['estado'], content['id']]
 
     try:
         with db_connection() as conn:
