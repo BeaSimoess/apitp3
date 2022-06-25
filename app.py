@@ -24,6 +24,11 @@ SERVER_ERROR = 500
 def home():
     return "Bem vindo à API!"
 
+@app.route('/test', methods = ["GET"])
+def test():
+    content = request.get_json()
+    return jsonify({content}), OK_CODE
+
 ##########################################################
 ## VERIFICAÇÃO TOKEN
 ##########################################################
