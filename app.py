@@ -67,7 +67,7 @@ def login():
         return jsonify({"message": "Parametros invalidos!"}), BAD_REQUEST_CODE
 
     # SQL Querry
-    query = """SELECT * FROM users WHERE nome = %s AND pass = %s;"""
+    query = """SELECT * FROM users WHERE nome = %s AND pass = crypt(%s, pass);"""
 
     # Array com parametros a atribuir à querry (nome e pass dados pelo json)
     values = [content['nome'], content['pass']]
@@ -97,7 +97,7 @@ def registo():
     if "nome" not in content or "pass" not in content: 
         return jsonify({"message": "Parâmetros inválidos"}), BAD_REQUEST_CODE
 
-    query = """INSERT INTO users(nome, pass) VALUES(%s, %s);"""
+    query = """INSERT INTO users(nome, pass) VALUES(%s, crypt(%s, gen_salt('bf')));"""
 
     values = [content['nome'], content['pass']]
 
