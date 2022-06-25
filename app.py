@@ -270,15 +270,15 @@ def inserirTarefa():
 @app.route("/tarefa", methods=['GET'])
 @auth_user
 def retornarTarefa():
-    content = request.get_json()
+    content = request.args.get("id")
 
-    if "id" not in content: 
+    if not content: 
         return jsonify({"message": "Parâmetros inválidos"}), BAD_REQUEST_CODE
     
     conn = db_connection()
     cur = conn.cursor()
     
-    cur.execute("SELECT * FROM tarefa WHERE id = %s;", content['id'])
+    cur.execute("SELECT * FROM tarefa WHERE id = %s;", (content,))
     row = cur.fetchone()
 
     conn.close()
@@ -315,7 +315,10 @@ def atualizaTarefa():
 @app.route("/tarefa", methods=['DELETE'])
 @auth_user
 def removerTarefa():
-    content = request.get_json()
+    content = request.args.get('id')
+
+    if not content:
+        return jsonify({"message": "Parâmetros inválidos!"}), BAD_REQUEST_CODE
 
     query = """DELETE FROM tarefa WHERE id = %s;"""
 
