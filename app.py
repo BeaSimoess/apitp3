@@ -335,17 +335,17 @@ def removerTarefa():
 @app.route("/tarefa/listagem", methods=['GET'])
 @auth_user
 def listaTarefas():
-    content = request.get_json()
+    content = request.args.get('lista_id')
 
-    if "lista_id" not in content:
-        return jsonify({"message": "O id não existe!"}), NOT_FOUND_CODE
+    if not content:
+        return jsonify({"message": "O id não foi inserido!"}), NOT_FOUND_CODE
 
     arrayList = []
     
     conn = db_connection()
     cur = conn.cursor()
     
-    cur.execute("SELECT * FROM tarefa WHERE lista_id = %s", content['lista_id'])
+    cur.execute("SELECT * FROM tarefa WHERE lista_id = %s", (content,))
     rows = cur.fetchall()
     for row in rows:
         arrayList.append({"id":row[0], "titulo":row[1], "descricao":row[2], "data":row[3], "hora":row[4], "estado":row[5], "lista_id":row[6]})
