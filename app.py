@@ -27,7 +27,7 @@ def home():
 @app.route('/test', methods = ["GET"])
 def test():
     content = request.get_json()
-    return jsonify({content}), OK_CODE
+    return content, OK_CODE
 
 ##########################################################
 ## VERIFICAÇÃO TOKEN
