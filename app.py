@@ -226,12 +226,12 @@ def removerLista():
 
     query = """DELETE FROM lista WHERE id = %s;"""
 
-    valeus = [content['id']]
+    values = content 
 
     try:
         with db_connection() as conn:
             with conn.cursor() as cursor:
-                cursor.execute(query, valeus)
+                cursor.execute(query, values)
         conn.close()
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"message": "A Lista não foi removida!"}), NOT_FOUND_CODE
