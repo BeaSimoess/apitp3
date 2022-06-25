@@ -225,12 +225,14 @@ def removerLista():
         return jsonify({"message": "O id não foi inserido!"}), BAD_REQUEST_CODE
 
     query = """DELETE FROM lista WHERE id = %s;"""
-
+    query2 = """DELETE FROM tarefa WHERE lista_id = %s;"""
 
     try:
         with db_connection() as conn:
             with conn.cursor() as cursor:
                 cursor.execute(query, (content,))
+                cursor.execute(query2, (content,))
+
         conn.close()
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"message": "A Lista não foi removida!"}), NOT_FOUND_CODE
