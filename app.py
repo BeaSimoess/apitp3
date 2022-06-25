@@ -160,7 +160,7 @@ def retornarLista():
 
     conn.close()
 
-    return jsonify({"id": row[0], "titulo": row[1], "user_id": row[2]}), OK_CODE
+    return jsonify({"lista":{"id": row[0], "titulo": row[1], "user_id": row[2]}}), OK_CODE
 
 
 ## ATUALIZAR DADOS
@@ -306,7 +306,7 @@ def retornarTarefa():
 
     conn.close()
 
-    return jsonify({"id": row[0], "titulo": row[1], "decricao": row[2], "data": row[3], "hora": row[4], "estado": row[5], "lista_id": row[6]}), OK_CODE
+    return jsonify({"tarefa":{"id": row[0], "titulo": row[1], "decricao": row[2], "data": row[3], "hora": row[4], "estado": row[5], "lista_id": row[6]}}), OK_CODE
 
 
 
