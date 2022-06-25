@@ -222,7 +222,7 @@ def removerLista():
     content = request.args.get('id')
 
     if not content:
-        return jsonify({"message": "O id não existe!"}), NOT_FOUND_CODE
+        return jsonify({"message": "O id não foi inserido!"}), NOT_FOUND_CODE
 
     query = """DELETE FROM lista WHERE id = %s;"""
 
@@ -230,7 +230,7 @@ def removerLista():
     try:
         with db_connection() as conn:
             with conn.cursor() as cursor:
-                cursor.execute(query, content['id'])
+                cursor.execute(query, (content,))
         conn.close()
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"message": "A Lista não foi removida!"}), NOT_FOUND_CODE
