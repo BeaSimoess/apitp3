@@ -196,7 +196,7 @@ def listaLista():
     decoded_token = jwt.decode(token, app.config['SECRET_KEY'])
 
     if "id" not in decoded_token:
-        return jsonify({"message": "O id não existe!"}), NOT_FOUND_CODE
+        return jsonify({"message": "O id não existe!"}), BAD_REQUEST_CODE
 
     values = [decoded_token['id']]
 
@@ -222,7 +222,7 @@ def removerLista():
     content = request.args.get('id')
 
     if not content:
-        return jsonify({"message": "O id não foi inserido!"}), NOT_FOUND_CODE
+        return jsonify({"message": "O id não foi inserido!"}), BAD_REQUEST_CODE
 
     query = """DELETE FROM lista WHERE id = %s;"""
 
