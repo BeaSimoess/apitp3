@@ -348,7 +348,7 @@ def removerTarefa():
     try:
         with db_connection() as conn:
             with conn.cursor() as cursor:
-                cursor.execute(query, content['id'])
+                cursor.execute(query, (content,))
         conn.close()
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"message": "A Tarefa não foi removida!"}), NOT_FOUND_CODE
