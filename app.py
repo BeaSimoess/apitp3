@@ -1,7 +1,5 @@
-from asyncio.windows_events import NULL
 from base64 import decode
 from crypt import methods
-from curses.ascii import NUL
 from gc import DEBUG_COLLECTABLE
 from flask import Flask, jsonify, request
 import logging, time, psycopg2, jwt, json
@@ -223,10 +221,12 @@ def removerLista():
 
     query = """DELETE FROM lista WHERE id = %s;"""
 
+    valeus = [content['id']]
+
     try:
         with db_connection() as conn:
             with conn.cursor() as cursor:
-                cursor.execute(query, content)
+                cursor.execute(query, valeus)
         conn.close()
     except (Exception, psycopg2.DatabaseError):
         return jsonify({"message": "A Lista não foi removida!"}), NOT_FOUND_CODE
@@ -327,11 +327,12 @@ def removerTarefa():
 
 
 ## LISTAGEM 
-@app.route("/tarefa/listagem/{lista_id}", methods=['GET'])
+@app.route("/tarefa/listagem", methods=['GET'])
 @auth_user
-def listaTarefas(lista_id):
+def listaTarefas():
+    content = request.get_json()
 
-    if lista_id is NULL:
+    if "lista_id" not in content:
         return jsonify({"message": "O id não existe!"}), NOT_FOUND_CODE
 
     arrayList = []
@@ -339,7 +340,7 @@ def listaTarefas(lista_id):
     conn = db_connection()
     cur = conn.cursor()
     
-    cur.execute("SELECT * FROM tarefa WHERE lista_id = %s", lista_id)
+    cur.execute("SELECT * FROM tarefa WHERE lista_id = %s", content['lista_id'])
     rows = cur.fetchall()
     for row in rows:
         arrayList.append({"id":row[0], "titulo":row[1], "descricao":row[2], "data":row[3], "hora":row[4], "estado":row[5], "lista_id":row[6]})
