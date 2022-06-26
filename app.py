@@ -80,7 +80,7 @@ def login():
                 # Criação do token com id do user e o tempo de expiração do token
                 token = jwt.encode({
                     'id': row[0], 
-                    'expiration': str(datetime.utcnow() + timedelta(hours=1))}, 
+                    'expiration': str(datetime.utcnow() + timedelta(minutes=2))}, 
                     app.config['SECRET_KEY'])
         conn.close()
     except (Exception, psycopg2.DatabaseError):
